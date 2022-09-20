@@ -1,0 +1,8 @@
+run "py -3 -m venv .venv"
+
+(Ctrl + Shift + p) -> python: select interpreter -> select
+
+(Ctrl + Shift + `) -> new terminal
+
+run "python -m pip install --upgrade pip"
+run "python -m pip install flask"
