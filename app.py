@@ -3,7 +3,7 @@ import os
 from werkzeug.utils import secure_filename
 
 
-UPLOAD_FOLDER = '/uploaded files'
+UPLOAD_FOLDER = 'statics/uploaded files'
 ALLOWED_EXTENTIONS = {'txt', 'pdf', 'docs'}
 
 app = Flask(__name__)
@@ -23,8 +23,10 @@ def allowed_file(filename):
 def success():
   if request.method == 'POST':
     file = request.files['file']
+    # checking if the uploaded file's extension included in 'allowed extensions'
     if not allowed_file(file.filename):
-      flash('only .txt, .pdf, .docs files allowed !!!')
+      flash("only .txt, .pdf, .docs files allowed !!!")
     else:
+      # saving the file to above mentioned foder
       file.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(file.filename)))
       return render_template('success.html', name=file.filename)
