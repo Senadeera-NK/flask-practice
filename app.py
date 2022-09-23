@@ -1,32 +1,23 @@
-from flask import *
 import os
+from flask import Flask, render_template, request, redirect, url_for, abort
 from werkzeug.utils import secure_filename
 
-
-UPLOAD_FOLDER = 'statics/uploaded files'
-ALLOWED_EXTENTIONS = {'txt', 'pdf', 'docs'}
-
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+app.config['UPLOAD_EXTENSIONS'] = ['.txt','.docs',',docx','.pdf']
+app.config['UPLOAD_PATH'] = '/statics/uploaded files'
 
 @app.route('/')
-def upload():
+def index():
   return render_template('index.html')
 
-# allowed files checking function
-def allowed_file(filename):
-  return '.' in filename and \
-    filename.rsplit('.',1)[1].lower() in ALLOWED_EXTENTIONS
-
-
 @app.route('/success', methods=['GET','POST'])
-def success():
-  if request.method == 'POST':
-    file = request.files['file']
-    # checking if the uploaded file's extension included in 'allowed extensions'
-    if not allowed_file(file.filename):
-      flash("only .txt, .pdf, .docs files allowed !!!")
-    else:
-      # saving the file to above mentioned foder
-      file.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(file.filename)))
-      return render_template('success.html', name=file.filename)
+def upload_files():
+  uploaded_file = request.files['file']
+  filename = secure_filename(uploaded_file.filename)
+  if filename != '':
+    file_ext = os.path.splitext(filename)[1]
+    if file_ext not in app.config['UPLOAD_EXTENSIONS']:
+      abort(400)
+    uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
+  return render_template('success.html',name=uploaded_file)
