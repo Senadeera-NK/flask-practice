@@ -38,6 +38,10 @@ def index():
 
   return render_template('success.html', name=file.filename)
 
+@app.route('/static/files/<path:filename>')
+def send_attachment(filename):
+  return send_from_directory(app.config['UPLOADS_FOLDER'], filename=filename, as_attachment=True)
+
 
 # @app.route('/success', methods=['POST'])
 # def success():
