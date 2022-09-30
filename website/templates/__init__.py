@@ -1,0 +1,1 @@
+{% comment %} making the website folder a python package, once imported the website folder it'll run as a web {% endcomment %}
